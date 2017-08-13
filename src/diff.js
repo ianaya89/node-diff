@@ -19,8 +19,11 @@ class Diff {
     let editLength = 1
 
     if (bestPath[0].newPos + 1 >= newLen && oldPos + 1 >= oldLen) {
-      return done(null, [{value: newString.join(''), count: newString.length}])
+      return done([{value: newString.join(''), count: newString.length}])
     }
+
+    console.log('Best Path', bestPath)
+    console.log('oldPos', oldPos)
 
     const execEditLength = () => {
       for (let diagonalPath = -1 * editLength; diagonalPath <= editLength; diagonalPath += 2) {
@@ -46,7 +49,7 @@ class Diff {
         } else {
           basePath = addPath
           basePath.newPos++
-          this._pushComponent(basePath.components, true, undefined)
+          this._pushComponent(basePath.components, true)
         }
 
         oldPos = this._getCommon(basePath, newString, oldString, diagonalPath)
@@ -71,11 +74,11 @@ class Diff {
   _pushComponent (components, added, removed) {
     const last = components[components.length - 1]
     if (last && last.added === added && last.removed === removed) {
-      components[components.length - 1] = { count: last.count + 1, added: added, removed: removed }
+      components[components.length - 1] = { count: last.count + 1, added, removed }
       return
     }
 
-    components.push({ count: 1, added: added, removed: removed })
+    components.push({ count: 1, added, removed })
   }
 
   _getCommon (basePath, newString, oldString, diagonalPath) {
