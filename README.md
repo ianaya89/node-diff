@@ -37,6 +37,10 @@ Options:
 -h, --help           output usage information
 ```
 
+## TODO
+* Add more UT
+* Upload as npm package
+
 ## License
 [MIT License](https://github.com/ianya89/node-diff/blob/master/LICENSE)
 
