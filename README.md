@@ -43,3 +43,6 @@ Options:
 
 ## Style
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
+
+---
+✍️ This project was based on [jsdiff](http://incaseofstairs.com/jsdiff/) and [LCS](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem)
