@@ -1,2 +1,10 @@
 #!/usr/bin/env node
+const figlet = require('figlet')
+const chalk = require('chalk')
+const pkg = require('../package')
+
+process.stdout.write('\n')
+process.stdout.write(`${chalk.blue(figlet.textSync('node-diff', { font: 'Ogre' }))}\n`)
+process.stdout.write(chalk.blue(`version: ${pkg.version}\n`))
+
 require('../')

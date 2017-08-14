@@ -31,7 +31,7 @@ const print = function (results) {
   for (let line in lines) {
     if (lines[line].value) {
       lines[line].value.split('\n').forEach(l => {
-        console.log(`${lineNumber}\t${lines[line].type}\t${l}`)
+        console.log(`${lineNumber}\t ${chalk.yellow(lines[line].type)}\t ${l}`)
         lineNumber += 1
       })
     }
