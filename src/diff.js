@@ -22,9 +22,6 @@ class Diff {
       return done([{value: newString.join(''), count: newString.length}])
     }
 
-    console.log('Best Path', bestPath)
-    console.log('oldPos', oldPos)
-
     const execEditLength = () => {
       for (let diagonalPath = -1 * editLength; diagonalPath <= editLength; diagonalPath += 2) {
         const addPath = bestPath[diagonalPath - 1]
@@ -44,7 +41,10 @@ class Diff {
         }
 
         if (!canAdd || (canRemove && addPath.newPos < removePath.newPos)) {
-          basePath = { newPos: removePath.newPos, components: removePath.components.slice(0) }
+          basePath = {
+            newPos: removePath.newPos,
+            components: removePath.components.slice(0)
+          }
           this._pushComponent(basePath.components, undefined, true)
         } else {
           basePath = addPath
