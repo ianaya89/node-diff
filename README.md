@@ -4,7 +4,7 @@
 ![demo](./demo.gif)
 
 ## Local Usage
-1. Clone or download this project
+1. [Clone](git@github.com:ianaya89/node-diff.git) or download this project.
 2. Install npm dependencies:
 
 ```bash
@@ -36,3 +36,10 @@ Options:
 -n --new <new-file>  new file path
 -h, --help           output usage information
 ```
+
+## License
+[MIT License](https://github.com/ianya89/node-diff/blob/master/LICENSE)
+
+
+## Style
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
