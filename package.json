@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node bin/node-diff",
     "dev": "nodemon bin/node-diff",
+    "test": "mocha --bail test/*.spec.js",
     "eslint": "eslint .",
     "eslint:fix": "eslint --fix ."
   },
@@ -18,6 +19,7 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^3.5.0",
     "nodemon": "^1.11.0"
   },
   "dependencies": {

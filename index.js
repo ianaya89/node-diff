@@ -17,7 +17,7 @@ const exec = function (oldFilePath, newFilePath) {
   console.log(chalk.cyan('\n🔀  comparing files..'))
 
   diff.getDiff(oldFile, newFile, (err, results) => {
-    if (err) { console.log('Error') }
+    if (err) { throw new Error(err) }
 
     print(results)
   })
