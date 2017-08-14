@@ -14,8 +14,8 @@ class Diff {
 
     const newLen = newString.length
     const oldLen = oldString.length
-    const bestPath = [{ newPos: -1, components: [] }]
-    const oldPos = this._getCommon(bestPath[0], newString, oldString, 0)
+    const bestPath = [{ newPos: -1, elements: [] }]
+    const oldPos = this._getCommonPattern(bestPath[0], newString, oldString, 0)
     let editLength = 1
 
     if (bestPath[0].newPos + 1 >= newLen && oldPos + 1 >= oldLen) {
@@ -43,19 +43,19 @@ class Diff {
         if (!canAdd || (canRemove && addPath.newPos < removePath.newPos)) {
           basePath = {
             newPos: removePath.newPos,
-            components: removePath.components.slice(0)
+            elements: removePath.elements.slice(0)
           }
-          this._pushComponent(basePath.components, undefined, true)
+          this._pushElement(basePath.elements, undefined, true)
         } else {
           basePath = addPath
           basePath.newPos++
-          this._pushComponent(basePath.components, true)
+          this._pushElement(basePath.elements, true)
         }
 
-        oldPos = this._getCommon(basePath, newString, oldString, diagonalPath)
+        oldPos = this._getCommonPattern(basePath, newString, oldString, diagonalPath)
 
         if (basePath.newPos + 1 >= newLen && oldPos + 1 >= oldLen) {
-          return done(this._buildValues(basePath.components, newString, oldString))
+          return done(this._buildValues(basePath.elements, newString, oldString))
         }
 
         bestPath[diagonalPath] = basePath
@@ -71,17 +71,18 @@ class Diff {
     }
   }
 
-  _pushComponent (components, added, removed) {
-    const last = components[components.length - 1]
+  _pushElement (elements, added, removed) {
+    const last = elements[elements.length - 1]
+
     if (last && last.added === added && last.removed === removed) {
-      components[components.length - 1] = { count: last.count + 1, added, removed }
+      elements[elements.length - 1] = { count: last.count + 1, added, removed }
       return
     }
 
-    components.push({ count: 1, added, removed })
+    elements.push({ count: 1, added, removed })
   }
 
-  _getCommon (basePath, newString, oldString, diagonalPath) {
+  _getCommonPattern (basePath, newString, oldString, diagonalPath) {
     let newLen = newString.length
     let oldLen = oldString.length
     let newPos = basePath.newPos
@@ -89,50 +90,53 @@ class Diff {
 
     let commonCount = 0
 
-    while ((newPos + 1 < newLen && oldPos + 1 < oldLen) && (newString[newPos + 1] === oldString[oldPos + 1])) {
+    while (
+      (newPos + 1 < newLen && oldPos + 1 < oldLen) &&
+      (newString[newPos + 1] === oldString[oldPos + 1])
+    ) {
       newPos++
       oldPos++
       commonCount++
     }
 
-    if (commonCount) { basePath.components.push({ count: commonCount }) }
+    if (commonCount) { basePath.elements.push({ count: commonCount }) }
 
     basePath.newPos = newPos
     return oldPos
   }
 
-  _buildValues (components, newString, oldString) {
-    let componentPos = 0
+  _buildValues (elements, newString, oldString) {
+    let elementPos = 0
     let newPos = 0
     let oldPos = 0
 
-    for (; componentPos < components.length; componentPos++) {
-      const component = components[componentPos]
+    for (; elementPos < elements.length; elementPos++) {
+      const element = elements[elementPos]
 
-      if (!component.removed) {
-        component.value = newString.slice(newPos, newPos + component.count).join('')
-        newPos += component.count
+      if (!element.removed) {
+        element.value = newString.slice(newPos, newPos + element.count).join('')
+        newPos += element.count
 
-        if (!component.added) { oldPos += component.count }
+        if (!element.added) { oldPos += element.count }
       } else {
-        component.value = oldString.slice(oldPos, oldPos + component.count).join('')
-        oldPos += component.count
+        element.value = oldString.slice(oldPos, oldPos + element.count).join('')
+        oldPos += element.count
 
-        if (componentPos && components[componentPos - 1].added) {
-          const tmp = components[componentPos - 1]
-          components[componentPos - 1] = components[componentPos]
-          components[componentPos] = tmp
+        if (elementPos && elements[elementPos - 1].added) {
+          const tmp = elements[elementPos - 1]
+          elements[elementPos - 1] = elements[elementPos]
+          elements[elementPos] = tmp
         }
       }
     }
 
-    const lastComponent = components[components.length - 1]
-    if (components.length > 1 && (lastComponent.added || lastComponent.removed) && !lastComponent.value) {
-      components[components.length - 2].value += lastComponent.value
-      components.pop()
+    const lastElement = elements[elements.length - 1]
+    if (elements.length > 1 && (lastElement.added || lastElement.removed) && !lastElement.value) {
+      elements[elements.length - 2].value += lastElement.value
+      elements.pop()
     }
 
-    return components
+    return elements
   }
 }
 

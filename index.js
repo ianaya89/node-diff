@@ -1,21 +1,28 @@
 const fs = require('fs')
-const commander = require('commander')
+const path = require('path')
+const program = require('commander')
+
 const diff = require('./src/diff')
 const print = require('./src/print')
 
-commander
-  .arguments('<new-file> <old-file>')
-  .description('Node CLI tool to compare two files')
-  .action((a, b) => {
-    console.log(a, b)
+const exec = function (oldFilePath, newFilePath) {
+  const oldFile = fs.readFileSync(path.resolve(__dirname, oldFilePath), { encoding: 'utf8' })
+  const newFile = fs.readFileSync(path.resolve(__dirname, newFilePath), { encoding: 'utf8' })
+
+  diff.getDiff(oldFile, newFile, (err, results) => {
+    if (err) { console.log('Error') }
+
+    print(results)
   })
+}
+
+program
+  .option('-o --old <old-file>', 'old file path')
+  .option('-n --new <new-file>', 'new file path')
+  .description('Node CLI tool to compare two files')
   .parse(process.argv)
 
-const newFile = fs.readFileSync('./files/new.txt', { encoding: 'utf8' })
-const oldFile = fs.readFileSync('./files/old.txt', { encoding: 'utf8' })
+if (!program.old) { throw new Error('Missing parameter -o -old (old file path)') }
+if (!program.new) { throw new Error('Missing parameter -n -new (new file path)') }
 
-diff.getDiff(oldFile, newFile, (err, results) => {
-  if (err) { console.log('Error') }
-
-  print(results)
-})
+exec(program.old, program.new)
